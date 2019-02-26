@@ -1,0 +1,7 @@
+# Monit configuration for Shoryuken: <%= fetch(:application) %>
+check process <%= shoryuken_service_name %>
+  with pidfile "<%= fetch(:shoryuken_pid) %>"
+  start program = "/bin/su - <%= shoryuken_user(@role) %> -c 'cd <%= current_path %> && <%= fetch(:shoryuken_cmd).join(' ') %> <%= start_command %>'" with timeout 30 seconds
+
+stop program = "/bin/su - <%= shoryuken_user(@role) %> -c 'kill -USR1 $(cat <%= fetch(:shoryuken_pid) %>)'" with timeout <%= fetch(:shoryuken_timeout).to_i + 10  %> seconds
+group <%= fetch(:shoryuken_monit_group) || fetch(:application) %>-shoryuken
